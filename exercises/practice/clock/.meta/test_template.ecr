@@ -1,0 +1,24 @@
+require "spec"
+require "../src/*"
+
+describe "<%-= to_capitalized(@json["exercise"].to_s) %>" do
+<%- @json["cases"].as_a.each do |cases| %>
+    <%- cases["cases"].as_a.each do |sub_case| %>
+    <%= status()%> "<%-= sub_case["description"] %>" do
+        <%- if sub_case["property"].to_s == "create" -%>
+            <%= to_capitalized(@json["exercise"].to_s) %>.new(hour: <%= sub_case["input"]["hour"] %>, minute: <%= sub_case["input"]["minute"] %>).to_s.should eq("<%= sub_case["expected"] %>")
+        <%- elsif sub_case["property"].to_s == "add" -%>
+            clock = <%= to_capitalized(@json["exercise"].to_s) %>.new(hour: <%= sub_case["input"]["hour"] %>, minute: <%= sub_case["input"]["minute"] %>)
+            (clock + <%= to_capitalized(@json["exercise"].to_s) %>.new(minute: <%= sub_case["input"]["value"] %>)).to_s.should eq("<%= sub_case["expected"] %>")
+        <%- elsif sub_case["property"].to_s == "subtract" -%>
+            clock = <%= to_capitalized(@json["exercise"].to_s) %>.new(hour: <%= sub_case["input"]["hour"] %>, minute: <%= sub_case["input"]["minute"] %>)
+            (clock - <%= to_capitalized(@json["exercise"].to_s) %>.new(minute: <%= sub_case["input"]["value"] %>)).to_s.should eq("<%= sub_case["expected"] %>")
+        <%- elsif sub_case["property"].to_s == "equal" -%>
+            clock1 = <%= to_capitalized(@json["exercise"].to_s) %>.new(hour: <%= sub_case["input"]["clock1"]["hour"] %>, minute: <%= sub_case["input"]["clock1"]["minute"] %>)
+            clock2 = <%= to_capitalized(@json["exercise"].to_s) %>.new(hour: <%= sub_case["input"]["clock2"]["hour"] %>, minute: <%= sub_case["input"]["clock2"]["minute"] %>)
+            clock1.<%-= sub_case["expected"].as_bool ? "should" : "should_not" %> eq(clock2)
+        <%- end -%>
+    end
+    <% end %>
+<% end %>
+end

@@ -1,0 +1,50 @@
+require "spec"
+require "../src/*"
+
+describe "<%-= to_capitalized(@json["exercise"].to_s) %>" do
+<%- @json["cases"].as_a.each do |cases| %>
+    <%= status()%> "<%-= cases["description"] %>" do
+    <%- cases["input"]["operations"].as_a.each do |operation| -%>
+        <%- if operation["type"] == "add_callback" -%>
+            <%-= "value#{operation["name"].to_s[-1]}"%> = [] of Int32
+        <%- end -%>
+    <%- end %>
+    <%- cases["input"]["cells"].as_a.each do |cells| -%>
+        <%- if cells["type"] == "input" -%>
+            <%-= cells["name"] %> = React::InputCell.new(<%-= cells["initial_value"] %>)
+        <%- elsif cells["type"] == "compute" -%>
+            <%-= cells["name"] %> = React::ComputeCell.new(<%-= cells["inputs"].as_a.join(", ") %>) { |<%= ((1..(cells["inputs"].as_a.size)).to_a.map {|x| "input#{x}"}).join(", ") -%>| <%-= cells["compute_function"].to_s.gsub(/inputs\[(\d+)\]/) { |match| "input#{$1.to_i + 1}" }.gsub(" then ", " ? ").gsub(" else ", " : ").gsub("if", "") %> }
+        <%- end -%>
+    <%- end -%>
+    <%- cases["input"]["operations"].as_a.each do |operation| -%>
+        <%- if operation["type"] == "expect_cell_value" -%>
+            <%-= operation["cell"] %>.value.should eq (<%-= operation["value"] %>)
+        <%- elsif operation["type"] == "remove_callback" -%>
+            <%-= operation["cell"] %>.remove_callback(<%-= operation["name"] %>)
+        <%- elsif operation["type"] == "set_value" -%>
+            <%-= operation["cell"] %>.value = <%-= operation["value"] %>
+            <%- if operation["expect_callbacks"]? -%>
+                <%- operation["expect_callbacks"].as_h.each do |callback| -%>
+                    <%-= "value#{callback[0].to_s[-1]}" %>[-1].should eq <%-= callback[1]%>
+                <%- end -%> 
+            <%- end -%> 
+            <%- if operation["expect_callbacks_not_to_be_called"]? -%>
+                <%- operation["expect_callbacks_not_to_be_called"].as_a.each do |callback| -%>
+                    <%- if operation["expect_callbacks"]? -%>
+                        <%- if operation["expect_callbacks"].size == 2 -%>
+                            <%-= "value#{callback.to_s[-1]}" %>.size.should eq 1
+                        <%- else -%>
+                            <%-= "value#{callback.to_s[-1]}" %>.should eq [] of Int32
+                        <%- end -%>
+                    <%- else -%>
+                        <%-= "value#{callback.to_s[-1]}" %>.should eq [] of Int32
+                    <%- end -%>
+                <%- end -%> 
+            <%- end -%> 
+        <%- elsif operation["type"] == "add_callback" -%>
+            <%-= operation["name"]%> = <%-= operation["cell"] %>.add_callback { |value| <%-= "value#{operation["name"].to_s[-1]}"%> << value }
+        <%- end -%>
+    <%- end %>
+    end
+<% end %>
+end

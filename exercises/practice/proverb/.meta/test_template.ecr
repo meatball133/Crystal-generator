@@ -1,0 +1,12 @@
+require "spec"
+require "../src/*"
+
+describe "<%-= to_capitalized(@json["exercise"].to_s) %>" do
+<%- @json["cases"].as_a.each do |cases| %>
+    <%= status()%> "<%-= cases["description"] %>" do
+    input = <%= cases["input"]["strings"].to_s == "[]" ? "[] of String" : cases["input"]["strings"].as_a %>
+    output = <%= cases["expected"].to_s == "[]" ? "[] of String" : cases["expected"].as_a %>
+        <%= to_capitalized(@json["exercise"].to_s) %>.<%= to_snake(cases["property"].to_s)%>(input).should eq(output)
+    end
+<% end %>
+end

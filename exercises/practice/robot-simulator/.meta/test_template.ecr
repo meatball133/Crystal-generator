@@ -1,0 +1,18 @@
+require "spec"
+require "../src/*"
+
+describe "<%-= to_capitalized(@json["exercise"].to_s) %>" do
+<%- @json["cases"].as_a.each do |cases| -%>
+    <%- cases["cases"].as_a.each do |subcases| %>
+        <%= status()%> "<%-= subcases["description"] %>" do
+        robot = <%= to_capitalized(@json["exercise"].to_s)%>.new({<%= subcases["input"]["position"]["x"]%>, <%= subcases["input"]["position"]["y"]%>}, :<%= subcases["input"]["direction"]%>)
+        <%- if subcases["input"]["instructions"]? -%>
+            robot.<%= to_snake(subcases["property"].to_s)%>("<%= subcases["input"]["instructions"] %>")
+        <% end %>
+        robot.x.should eq <%= subcases["expected"]["position"]["x"]%>
+        robot.y.should eq <%= subcases["expected"]["position"]["y"]%>
+        robot.direction.should eq :<%= subcases["expected"]["direction"]%>
+    end
+    <% end %>
+<% end %>
+end

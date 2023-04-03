@@ -1,0 +1,16 @@
+require "spec"
+require "../src/*"
+
+struct Time
+  def leap_year?
+    raise "That's too easy! Implement this method in your own way!"
+  end
+end
+
+describe "<%-= to_capitalized(@json["exercise"].to_s) %>" do
+<%- @json["cases"].as_a.each do |cases| %>
+    <%= status()%> "<%-= cases["description"] %>" do
+        Year.leap?(<%= cases["input"]["year"] %>).should <%-= cases["expected"].as_bool ? "be_true" : "be_false" %>
+    end
+<% end %>
+end

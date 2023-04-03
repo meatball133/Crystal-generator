@@ -1,0 +1,18 @@
+require "spec"
+require "../src/*"
+
+describe "<%-= to_capitalized(@json["exercise"].to_s) %>" do
+<%- @json["cases"].as_a.each do |cases| %>
+    <%= status()%> "<%-= cases["description"] %>" do
+    binary = <%= to_capitalized(@json["exercise"].to_s) %>.new(<%= cases["input"]["array"].as_a %> of Int32)
+    value = <%= cases["input"]["value"] %> 
+    <%- if cases["expected"].as_h? %>
+    expect_raises(ArgumentError) do
+        binary.<%= to_snake(cases["property"].to_s)%>(value)
+    end
+    <%- else %>
+    binary.<%= to_snake(cases["property"].to_s)%>(value).should eq(<%= cases["expected"]%>)
+    <%- end %>
+    end
+<% end %>
+end

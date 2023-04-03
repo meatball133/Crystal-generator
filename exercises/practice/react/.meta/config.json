@@ -1,0 +1,10 @@
+{
+  "authors": ["petertseng"],
+  "contributors": ["amscotti", "issyl0", "mhelmetag", "meatball133"],
+  "files": {
+    "solution": ["src/react.cr"],
+    "test": ["spec/react_spec.cr"],
+    "example": [".meta/src/example.cr"]
+  },
+  "blurb": "Implement a basic reactive system."
+}

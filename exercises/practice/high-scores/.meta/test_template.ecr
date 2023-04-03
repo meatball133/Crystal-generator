@@ -1,0 +1,27 @@
+require "spec"
+require "../src/*"
+
+describe "<%-= to_capitalized(@json["exercise"].to_s) %>" do
+<%- @json["cases"].as_a.each do |cases| -%>
+    <%- if cases["cases"]? -%>
+        <%- cases["cases"].as_a.each do |subcases| %>
+    <%= status()%> "<%-= subcases["description"] %>" do
+        <% if subcases["property"].to_s.includes?("After") %>
+        high_scores = <%= to_capitalized(@json["exercise"].to_s)%>.new(<%= subcases["input"]["scores"]%>)
+        expected = <%= subcases["expected"]%>
+        high_scores.<%= subcases["property"].to_s.split("After")[1] == "Best" || subcases["property"].to_s.split("After")[1] == "TopThree" ? to_snake("personal" + subcases["property"].to_s.split("After")[1]) : subcases["property"].to_s.split("After")[1]%>()
+        high_scores.<%= to_snake(subcases["property"].to_s.split("After")[0])%>.should eq expected
+        <% else %>
+        high_scores = <%= to_capitalized(@json["exercise"].to_s)%>.new(<%= subcases["input"]["scores"]%>)
+        high_scores.<%= to_snake(subcases["property"].to_s)%>().should eq(<%= subcases["expected"]%>)
+        <% end %>
+    end
+        <% end %>
+    <%- else -%>    
+    <%= status()%> "<%-= cases["description"] %>" do
+        high_scores = <%= to_capitalized(@json["exercise"].to_s)%>.new(<%= cases["input"]["scores"]%>)
+        high_scores.<%= to_snake(cases["property"].to_s)%>().should eq(<%= cases["expected"]%>)
+    end
+    <% end %>
+<% end %>
+end

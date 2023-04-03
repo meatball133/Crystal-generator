@@ -1,0 +1,14 @@
+require "spec"
+require "../src/*"
+
+describe "<%-= to_capitalized(@json["exercise"].to_s) %>" do
+<%- @json["cases"].as_a.each do |cases| %>
+    <%= status()%> "<%-= cases["description"] %>" do
+        <%- if cases["input"]["array"].to_s == "[[[]]]" %>
+<%= to_capitalized(@json["exercise"].to_s) %>.<%= to_snake(cases["property"].to_s)%>(Array(Array(Int32)).new).should eq(<%= cases["expected"].as_a %> of Int32)
+        <%- else %>
+            <%= to_capitalized(@json["exercise"].to_s) %>.<%= to_snake(cases["property"].to_s)%>(<%= cases["input"]["array"].to_s == "[]" ? "[] of Int32 | Nil" : cases["input"]["array"].as_a %>).should eq(<%= cases["expected"].to_s == "[]" ? "[] of Int32" : cases["expected"].as_a %>)
+        <%- end %>
+    end
+<% end %>
+end

@@ -1,0 +1,10 @@
+require "spec"
+require "../src/*"
+
+describe "<%-= to_capitalized(@json["exercise"].to_s) %>" do
+<%- @json["cases"].as_a.each do |cases| %>
+    <%= status()%> "<%-= cases["description"] %>" do
+        <%= to_capitalized(@json["exercise"].to_s) %>.from(Time.utc(<%= cases["input"]["moment"].to_s.split(/[:T-]/).map {|item| item.to_i}.join(", ") %>)).should eq(Time.utc(<%= cases["expected"].to_s.split(/[:T-]/).map {|item| item.to_i}.join(", ") %>))
+    end
+<% end %>
+end

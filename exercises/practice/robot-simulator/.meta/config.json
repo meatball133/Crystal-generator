@@ -1,0 +1,10 @@
+{
+  "authors": ["meatball133"],
+  "files": {
+    "solution": ["src/robot_simulator.cr"],
+    "test": ["spec/robot_simulator_spec.cr"],
+    "example": [".meta/src/example.cr"]
+  },
+  "blurb": "Write a robot simulator.",
+  "source": "Inspired by an interview question at a famous company."
+}

@@ -1,0 +1,17 @@
+{
+  "authors": ["meatball133"],
+  "files": {
+    "solution": [
+      "src/palindrome_products.cr"
+    ],
+    "test": [
+      "spec/palindrome_products_spec.cr"
+    ],
+    "example": [
+      ".meta/src/example.cr"
+    ]
+  },
+  "blurb": "Detect palindrome products in a given range.",
+  "source": "Problem 4 at Project Euler",
+  "source_url": "https://projecteuler.net/problem=4"
+}
